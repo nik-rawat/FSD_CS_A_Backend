@@ -1,5 +1,5 @@
 const http = require("http");
-const PORT = 3000
+const PORT = 3000;
 const app = http.createServer((req, res) => {
     const users = [];
     if (req.url == "/" && req.method == "GET") {
@@ -19,13 +19,14 @@ const app = http.createServer((req, res) => {
             const parsedData = JSON.parse(body);
             const {name, email} = parsedData;
             const id = users.length > 0 ? users[users.length - 1].id + 1 : 1001;
-            users.push({
-                id,
-                name,
-                email
-            });
+            const newUser = {
+                id: id,
+                name: name,
+                email: email
+            };
+            users.push(newUser);
         })
-        res.writeHead(200, {"Content-Type": "application/json"});
+        res.writeHead(201, {"Content-Type": "application/json"});
         res.write(JSON.stringify("User registered"));
     }
     else {
