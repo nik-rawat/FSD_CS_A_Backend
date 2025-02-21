@@ -27,8 +27,31 @@ const app = http.createServer((req, res) => {
             users.push(newUser);
         })
         res.writeHead(201, {"Content-Type": "application/json"});
-        res.write(JSON.stringify("User registered"));
+        res.write(JSON.stringify({ message: "User registered: ", data: users[users.length - 1]}));
     }
+    else if(req.url == "/user" && req.method == "DELETE") {
+        let body = "";
+        const index = -1;
+        req.on("data", (chunk) => {
+            body = body + chunk;
+        })
+        req.on("end", () => {
+            const parsedData = JSON.parse(body);
+            const uid = parsedData.id;
+            const index = users.findIndex(index => index.id == uid);
+            if (index == -1) {
+                res.writeHead(404, {"Content-Type": "application/json"});
+                res.write(JSON.stringify({message: "User Not Found"}));
+            }
+            else {
+                users.splice(index, 1);
+                res.writeHead(201, {"Content-Type": "application/json"});
+                res.write(JSON.stringify({message: "User Deleted: "}));
+            }
+        })
+        
+    }
+
     else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.write(JSON.stringify("Page Not Found 404"));
